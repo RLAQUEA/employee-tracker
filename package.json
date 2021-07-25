@@ -1,0 +1,32 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "employee tracker that manages departments, roles and employees within a company ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RLAQUEA/employee-tracker.git"
+  },
+  "keywords": [
+    "node.js",
+    "mysql2",
+    "inquirer",
+    "database"
+  ],
+  "author": "Rachel E LaQuea",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RLAQUEA/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/RLAQUEA/employee-tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.1.2",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.12"
+  },
+  "devDependencies": {}
+}
