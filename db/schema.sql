@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS employees;
 CREATE DATABASE employees;
 
 CREATE TABLE department (
+    
 --insert code 
 );
 
