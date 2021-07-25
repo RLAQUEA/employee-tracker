@@ -35,93 +35,119 @@ function getAllInfo() {
                 break;
             case "Add Department":
                 addDept();
+            case 'Quit':
+                quitApp();
             default:
+                quitApp();
         }
         console.table(getAllInfo);
-    }
-
-    )
+    })
 }
 getAllInfo();
 
-const addEmp = () => {
+const NewEmpInfo = () => {
     inquirer.prompt([
         {
             type: 'input',
             name: 'first_name',
-            message: 'Enter first name:'
+            message: 'Enter new department name:'
         },
 
         {
             type: 'input',
             name: 'last_name',
             message: 'Enter last name:'
-        }, 
+        },
         {
             type: 'input',
             name: 'manager',
-            message: 'Enter Manager of new employee:'
+            message: 'Enter name of Manager for new employee:'
         }
     ]).then(response => {
-        addEmp('first_name', );
-    },
-
-    async function addEmp() {
-        let employees = await db.findEmp();
-        try {
-        } catch (error) {
-            error.message;
+        switch (response.userInput) {
+            case "Add Employee":
+            default:
+                addEmp();
+                break;
         }
-        console.table(employees);
     }
-    addEmp();
-
-    
-    async function updateRole() {
-        let employees = await db.findEmp();
-        try {
-        } catch (error) {
-            error.message;
-        }
-        console.table(employees);
-    }
-    updateRole();
-
-    async function viewRoles() {
-        let employees = await db.findEmp();
-        try {
-        } catch (error) {
-            error.message;
-        }
-        console.table(employees);
-    }
-    viewRoles();
-
-    async function addRole() {
-        let employees = await db.findEmp();
-        try {
-        } catch (error) {
-            error.message;
-        }
-        console.table(employees);
-    }
-    addRole();
-    async function viewDepts() {
-        let employees = await db.findEmp();
-        try {
-        } catch (error) {
-            error.message;
-        }
-        console.table(employees);
-    }
-    viewDepts();
-    async function addDept() {
-        let employees = await db.findEmp();
-        try {
-        } catch (error) {
-            error.message;
-        }
-        console.table(employees);
-    }
-    addDept();
+    )
 }
+
+async function addEmp() {
+    let employees = await db.findEmp();
+    try {
+    } catch (error) {
+        error.message;
+    }
+    console.table(employees);
+}
+addEmp();
+
+const NewDeptInfo = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'department',
+            message: 'What is the name of the department?'
+        }
+    ]).then(response => {
+        switch (response.userInput) {
+            case "Add Department":
+                break;
+            default:
+                addDept();
+          
+            }
+}
+)
+}
+NewDeptInfo();
+async function updateRole() {
+    let employees = await db.findEmp();
+    try {
+    } catch (error) {
+        error.message;
+    }
+    console.table(employees);
+}
+updateRole();
+
+async function viewRoles() {
+    let employees = await db.findEmp();
+    try {
+    } catch (error) {
+        error.message;
+    }
+    console.table(employees);
+}
+viewRoles();
+
+async function addRole() {
+    let employees = await db.findEmp();
+    try {
+    } catch (error) {
+        error.message;
+    }
+    console.table(employees);
+}
+addRole();
+async function viewDepts() {
+    let employees = await db.findEmp();
+    try {
+    } catch (error) {
+        error.message;
+    }
+    console.table(employees);
+}
+viewDepts();
+async function addDept() {
+    let employees = await db.findEmp();
+    try {
+    } catch (error) {
+        error.message;
+    }
+    console.table(employees);
+}
+addDept(); 
+
