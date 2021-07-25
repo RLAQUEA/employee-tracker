@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 
+//Inquirer prompts that gives list of options that the user can choose
 function getAllInfo() {
     inquirer.prompt([
         {
@@ -38,3 +39,4 @@ function getAllInfo() {
     }
     )
 }
+
