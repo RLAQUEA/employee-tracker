@@ -40,7 +40,6 @@ function getAllInfo() {
             default:
                 getAllInfo();
         }
-        console.table(getAllInfo);
     })
 }
 getAllInfo();
@@ -48,15 +47,12 @@ getAllInfo();
 
 //View all employees in database
 async function viewEmp() {
-    let employees = await db.findEmp();
-    try {
-    } catch (error) {
-        error.message;
-    }
-    console.table(employees);
+    connection.query('SELECT * FROM employee', (err, res) => {
+        if(err) throw err 
+        console.table(res);
+        getAllInfo();
+    })
 }
-viewEmp();
-
 
 
 //Add new employee to database 
@@ -86,49 +82,99 @@ const addEmpInfo = () => {
         switch (response.userInput) {
             case "Add Employee":
             default:
-                addEmp();
+                // addEmp();
                 break;
         }
         console.log("Added employee to database");
     }
     )
 }
-addEmp();
-async function addEmp() {
-    let employees = await db.findEmp();
-    try {
-    } catch (error) {
-        error.message;
-    }
-    console.table(employees);
-}
-addEmp(); 
 
+
+async function addEmp() {
+connection.query('SELECT * FROM role', (err, res) => {
+    if(err) throw err
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'Please enter first name of employee you\'d like to add:'
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'Please enter last name of employee you\'d like to add:'
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'Select a role for this new employee:',
+            choices: res.map(role => role.title)
+        },
+    ]).then(response => {
+        const chosenRole = res.find(role => role.title === response.role_id)
+        const employeeFirstName = response.first_name
+        const employeeLastName = response.last_name
+        connection.query('SELECT * FROM employee', (err, res) => {
+            if(err) throw err
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'manager_id',
+                message: 'Select a manager for this employee:',
+                choices: res.map(manager => manager.first_name)
+            }, 
+        ]).then(response => {
+            const chosenMgr = res.find(manager => manager.first_name === response.manager_id)
+            connection.query('INSERT INTO employee SET ?', {
+                first_name: employeeFirstName,
+                last_name: employeeLastName,
+                role_id: chosenRole.id,
+                manager_id: chosenMgr.id
+            }, function(err) {
+                if(err) throw err
+                console.log('Employee has been added');
+                getAllInfo();
+            }
+            )
+        })
+        })
+    })
+
+})
+
+}
 
 
 //Update role info in database 
-async function updateRole() {
-    let employees = await db.findEmp();
-    try {
-    } catch (error) {
-        error.message;
-    }
-    console.table(employees);
-}
-updateRole();
+//inquirer prompt to map thru emp first names, 
+// "choose emp to update"
 
+//const updateEmp = response.(name of inquirer prompt) 
+// res.map (employee => employee.first_name)
+
+// "choose role for employee"
+// res.map (role => role.title) 
+//const chosenRole = res.find(role => role.title === response.role_id)
+//now do connection query to update emp SET ? WHERE first_name = updateEmp {
+// role_id: chosenRole.id
+// }
+
+async function updateRole() {
+    connection.query('SELECT * FROM employee', (err, res) => {
+        if(err) throw err 
+        console.table(res);
+    })}
+updateRole();
+    
 
 //View all roles in database 
 async function viewRoles() {
     let employees = await db.findEmp();
-    try {
-    } catch (error) {
-        error.message;
-    }
+
     console.table(employees);
 }
 viewRoles();
-
 
 
 
@@ -174,17 +220,14 @@ async function addRole() {
 addRole();
 
 
-
 //View all departments in database
 async function viewDepts() {
-    let employees = await db.findEmp();
-    try {
-    } catch (error) {
-        error.message;
-    }
-    console.table(employees);
+    connection.query('SELECT * FROM department', (err, res) => {
+        if(err) throw err 
+        console.table(res);
+        getAllInfo();
 }
-viewDepts();
+)}
 
 //Add new department to database 
 const NewDeptInfo = () => {
