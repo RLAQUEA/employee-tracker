@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const cTable = require('console.table');
 const connection = require('./db/connection');
 
-//Inquirer prompts that gives list of options that the user can choose
+//Main menu of options
 function getAllInfo() {
     inquirer.prompt([
         {
@@ -38,31 +38,50 @@ function getAllInfo() {
             case 'Quit':
                 quitApp();
             default:
-                quitApp();
+                getAllInfo();
         }
         console.table(getAllInfo);
     })
 }
 getAllInfo();
 
-const NewEmpInfo = () => {
+
+//View all employees in database
+async function viewEmp() {
+    let employees = await db.findEmp();
+    try {
+    } catch (error) {
+        error.message;
+    }
+    console.table(employees);
+}
+viewEmp();
+
+
+
+//Add new employee to database 
+const addEmpInfo = () => {
     inquirer.prompt([
         {
             type: 'input',
             name: 'first_name',
-            message: 'Enter new department name:'
+            message: 'Enter employee\'s first name:'
         },
-
         {
             type: 'input',
             name: 'last_name',
-            message: 'Enter last name:'
+            message: 'Enter employee\'s last name:'
         },
         {
             type: 'input',
-            name: 'manager',
-            message: 'Enter name of Manager for new employee:'
-        }
+            name: 'role_id',
+            message: 'Enter employee\'s role:'
+        },
+        {
+            type: 'input',
+            name: 'manager_id',
+            message: 'Enter employee\'s manager:'
+        },
     ]).then(response => {
         switch (response.userInput) {
             case "Add Employee":
@@ -70,10 +89,11 @@ const NewEmpInfo = () => {
                 addEmp();
                 break;
         }
+        console.log("Added employee to database");
     }
     )
 }
-
+addEmp();
 async function addEmp() {
     let employees = await db.findEmp();
     try {
@@ -82,27 +102,11 @@ async function addEmp() {
     }
     console.table(employees);
 }
-addEmp();
+addEmp(); 
 
-const NewDeptInfo = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'department',
-            message: 'What is the name of the department?'
-        }
-    ]).then(response => {
-        switch (response.userInput) {
-            case "Add Department":
-                break;
-            default:
-                addDept();
-          
-            }
-}
-)
-}
-NewDeptInfo();
+
+
+//Update role info in database 
 async function updateRole() {
     let employees = await db.findEmp();
     try {
@@ -113,6 +117,8 @@ async function updateRole() {
 }
 updateRole();
 
+
+//View all roles in database 
 async function viewRoles() {
     let employees = await db.findEmp();
     try {
@@ -123,6 +129,40 @@ async function viewRoles() {
 }
 viewRoles();
 
+
+
+
+//Add new role to database 
+const addRoleInfo = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'role',
+            message: 'What is the name of the role?'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary for this role?'
+        },
+        {
+            type: 'input',
+            name: 'department',
+            message: 'What is the department for this role?'
+        },
+    ]).then(response => {
+        switch (response.userInput) {
+            case "Add Role":
+            default:
+                addRole();
+                break;
+        }
+        console.log("Added role to database");
+    }
+    )
+}
+addRole();
+
 async function addRole() {
     let employees = await db.findEmp();
     try {
@@ -132,6 +172,10 @@ async function addRole() {
     console.table(employees);
 }
 addRole();
+
+
+
+//View all departments in database
 async function viewDepts() {
     let employees = await db.findEmp();
     try {
@@ -141,6 +185,27 @@ async function viewDepts() {
     console.table(employees);
 }
 viewDepts();
+
+//Add new department to database 
+const NewDeptInfo = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'department',
+            message: 'Enter new department name:'
+        },
+    ]).then(response => {
+        switch (response.userInput) {
+            case "Add Department":
+            default:
+                addDept();
+                break;
+        }
+        console.log("Added department to database");
+    }
+    )
+}
+addDept();
 async function addDept() {
     let employees = await db.findEmp();
     try {
@@ -150,4 +215,3 @@ async function addDept() {
     console.table(employees);
 }
 addDept(); 
-
