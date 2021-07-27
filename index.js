@@ -37,7 +37,7 @@ function getAllInfo() {
             case "Add Department":
                 addDept();
             case 'Quit':
-                quitApp();
+                // quitApp();
             default:
                 getAllInfo();
         }
@@ -149,33 +149,18 @@ async function addRole() {
     ])
     console.log(response);
 
-    
     let insertRole = await connection.query('INSERT INTO role SET ?', {
         title: response.title,
         salary: response.salary,
-        department_id: response.departments    
+        department_id: response.departments
     })
-    
+
     let department_id = await connection.query('SELECT * FROM department')
     for (let i = 0; i < department_id.length; i++) {
         console.log(department_id);
     }
-    console.log(insertRole) 
+    console.log(insertRole)
 }
-
-
-//Update role info in database 
-// inquirer prompt to map thru emp first names, 
-// "choose emp to update"
-
-// const updateEmp = response.(name of inquirer prompt) 
-// res.map (employee => employee.first_name)
-
-// "choose role for employee"
-// res.map (role => role.title) 
-// const chosenRole = res.find(role => role.title === response.role_id)
-// now do connection query to update emp SET ? WHERE first_name = updateEmp {
-// role_id: chosenRole.id
 
 //Update role info in database 
 async function updateRole() {
@@ -213,8 +198,8 @@ async function updateRole() {
     })
 
 }
-//View all departments in database
 
+//View all departments in database
 async function viewDepts() {
     connection.query('SELECT * FROM department', (err, res) => {
         if (err) throw err
@@ -225,67 +210,30 @@ async function viewDepts() {
 }
 
 
-        // //Add new department to database 
+//Add new department to database 
+async function addDept() {
 
-        // // const NewDeptInfo = () => {
-        // //     inquirer.prompt([
-        // //         {
-        // //             type: 'input',
-        // //             name: 'department',
-        // //             message: 'Enter new department name:'
-        // //         },
-        // //     ]).then(response => {
-        // //         switch (response.userInput) {
-        // //             case "Add Department":
-        // //             default:
-        // //                 addDept();
-        // //                 break;
-        // //         }
-        // //         console.log("Added department to database");
-        // //     }
-        // //     )
-        // // }
-        // // async function addDept() {
-        // //     let employees = await db.findEmp();
-        // //     try {
-        // //     } catch (error) {
-        // //         error.message;
-        // //     }
-        // //     console.table(employees);
+let departments = await connection.query('SELECT * FROM department')
 
 
+let newDept = departments.map(({ id, name }) => ({
+    name: name,
+    id: id
+}));
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'department',
+            message: 'Enter new department name:'
+        },
+    ])
+        {let insertDept = await connection.query('INSERT INTO role SET ?', {
+            name: response.name,
+            department_id: response.departments
+        })
+     }
+        console.log("Added department to database");
+    
+// quitApp();
 
-
-        //Add new employee to database 
-// const addEmpInfo = () => {
-//     inquirer.prompt([
-//         {
-//             type: 'input',
-//             name: 'first_name',
-//             message: 'Enter employee\'s first name:'
-//         },
-//         {
-//             type: 'input',
-//             name: 'last_name',
-//             message: 'Enter employee\'s last name:'
-//         },
-//         {
-//             type: 'input',
-//             name: 'role_id',
-//             message: 'Enter employee\'s role:'
-//         },
-//         {
-//             type: 'input',
-//             name: 'manager_id',
-//             message: 'Enter employee\'s manager:'
-//         },
-//     ]).then(response => {
-//         switch (response.userInput) {
-//             case "Add Employee":
-//             default:
-//                 break;
-//         }
-//         console.log("Added employee to database");
-    // }
-    // )
-// }
+}
