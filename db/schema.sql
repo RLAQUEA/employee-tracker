@@ -18,6 +18,6 @@ department_id:INT
 );
 
 CREATE TABLE department (
-  id:INT AUTO_INCREMENTPRIMARY KEY,
+  id:INT AUTO_INCREMENT PRIMARY KEY,
   name:VARCHAR(30) NOT NULL
 );

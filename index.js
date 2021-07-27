@@ -56,41 +56,6 @@ async function viewEmp() {
 }
 
 
-//Add new employee to database 
-const addEmpInfo = () => {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'first_name',
-            message: 'Enter employee\'s first name:'
-        },
-        {
-            type: 'input',
-            name: 'last_name',
-            message: 'Enter employee\'s last name:'
-        },
-        {
-            type: 'input',
-            name: 'role_id',
-            message: 'Enter employee\'s role:'
-        },
-        {
-            type: 'input',
-            name: 'manager_id',
-            message: 'Enter employee\'s manager:'
-        },
-    ]).then(response => {
-        switch (response.userInput) {
-            case "Add Employee":
-            default:
-                break;
-        }
-        console.log("Added employee to database");
-    }
-    )
-}
-
-
 async function addEmp() {
     connection.query('SELECT * FROM role', (err, res) => {
         if (err) throw err
@@ -146,6 +111,59 @@ async function addEmp() {
 }
 
 
+// View all roles in database 
+async function viewRoles() {
+    connection.query('SELECT * FROM department', (err, res) => {
+        if (err) throw err
+        console.table(res);
+        getAllInfo();
+    })
+}
+
+// //Add new role to database
+async function addRole() {
+    //get all departments
+    let departments = await connection.query('SELECT * FROM department')
+    let newDept = departments.map(({ id, name }) => ({
+        name: name,
+        id: id
+    }));
+    //prompt user for name of role and salary
+    let response = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'title',
+            message: 'What is the name of the role?'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the salary for this role?'
+        },
+        {
+            type: 'list',
+            name: 'department_id',
+            message: 'Select the department for this role:',
+            choices: newDept
+        },
+    ])
+    console.log(response);
+
+    
+    let insertRole = await connection.query('INSERT INTO role SET ?', {
+        title: response.title,
+        salary: response.salary,
+        department_id: response.departments    
+    })
+    
+    let department_id = await connection.query('SELECT * FROM department')
+    for (let i = 0; i < department_id.length; i++) {
+        console.log(department_id);
+    }
+    console.log(insertRole) 
+}
+
+
 //Update role info in database 
 // inquirer prompt to map thru emp first names, 
 // "choose emp to update"
@@ -159,54 +177,9 @@ async function addEmp() {
 // now do connection query to update emp SET ? WHERE first_name = updateEmp {
 // role_id: chosenRole.id
 
-
-
-// View all roles in database 
-
-async function viewRoles() {
-    connection.query('SELECT * FROM role', (err, res) => {
-        if (err) throw err
-        console.table(res);
-        getAllInfo();
-    })
-}
-
-
-//Add new role to database
-
-async function addRole () {
-    connection.query('SELECT * FROM department', (err, res) => {
-    if (err) throw err
-        inquirer.prompt([
-        {
-            type: 'input',
-            name: 'role',
-            message: 'What is the name of the role?'
-        },
-        {
-            type: 'input',
-            name: 'salary',
-            message: 'What is the salary for this role?'
-        },
-        {
-            type: 'input',
-            name: 'department',
-            message: 'What is the department for this role?',
-            choices: res.map(department => department.department_id)
-        },
-    ]).then(response => {
-        const newRole = res.find(department => department.role_id === response.role_id)
-        console.log("Added role to database");
-    }
-    )
-},
-
-
 //Update role info in database 
-
 async function updateRole() {
     connection.query('SELECT * FROM employee', (err, res) => {
-        if (err) throw err
         inquirer.prompt([
             {
                 type: 'list',
@@ -227,7 +200,7 @@ async function updateRole() {
                 },
             ]).then(response => {
                 const chosenRole = res.find(role => role.title === response.role_id)
-                connection.query('SET ? WHERE first_name = updateEmp', {
+                connection.query('SET ? WHERE first_name = chosenRole', {
                     role_id: chosenRole.id
                 }, function (err) {
                     if (err) throw err
@@ -240,44 +213,79 @@ async function updateRole() {
     })
 
 }
+//View all departments in database
 
-            //View all departments in database
-
-            // async function viewDepts() {
-            //     connection.query('SELECT * FROM department', (err, res) => {
-            //         if (err) throw err
-            //         console.table(res);
-            //         getAllInfo();
-            //     }
-            //     )
-            // }
-
-            //Add new department to database 
+async function viewDepts() {
+    connection.query('SELECT * FROM department', (err, res) => {
+        if (err) throw err
+        console.table(res);
+        getAllInfo();
+    }
+    )
+}
 
 
-            // const NewDeptInfo = () => {
-            //     inquirer.prompt([
-            //         {
-            //             type: 'input',
-            //             name: 'department',
-            //             message: 'Enter new department name:'
-            //         },
-            //     ]).then(response => {
-            //         switch (response.userInput) {
-            //             case "Add Department":
-            //             default:
-            //                 addDept();
-            //                 break;
-            //         }
-            //         console.log("Added department to database");
-            //     }
-            //     )
-            // }
-            // async function addDept() {
-            //     let employees = await db.findEmp();
-            //     try {
-            //     } catch (error) {
-            //         error.message;
-            //     }
-            //     console.table(employees);
-    )}
+        // //Add new department to database 
+
+        // // const NewDeptInfo = () => {
+        // //     inquirer.prompt([
+        // //         {
+        // //             type: 'input',
+        // //             name: 'department',
+        // //             message: 'Enter new department name:'
+        // //         },
+        // //     ]).then(response => {
+        // //         switch (response.userInput) {
+        // //             case "Add Department":
+        // //             default:
+        // //                 addDept();
+        // //                 break;
+        // //         }
+        // //         console.log("Added department to database");
+        // //     }
+        // //     )
+        // // }
+        // // async function addDept() {
+        // //     let employees = await db.findEmp();
+        // //     try {
+        // //     } catch (error) {
+        // //         error.message;
+        // //     }
+        // //     console.table(employees);
+
+
+
+
+        //Add new employee to database 
+// const addEmpInfo = () => {
+//     inquirer.prompt([
+//         {
+//             type: 'input',
+//             name: 'first_name',
+//             message: 'Enter employee\'s first name:'
+//         },
+//         {
+//             type: 'input',
+//             name: 'last_name',
+//             message: 'Enter employee\'s last name:'
+//         },
+//         {
+//             type: 'input',
+//             name: 'role_id',
+//             message: 'Enter employee\'s role:'
+//         },
+//         {
+//             type: 'input',
+//             name: 'manager_id',
+//             message: 'Enter employee\'s manager:'
+//         },
+//     ]).then(response => {
+//         switch (response.userInput) {
+//             case "Add Employee":
+//             default:
+//                 break;
+//         }
+//         console.log("Added employee to database");
+    // }
+    // )
+// }
