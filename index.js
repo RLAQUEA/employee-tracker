@@ -37,7 +37,7 @@ function getAllInfo() {
             case "Add Department":
                 addDept();
             case 'Quit':
-                // quitApp();
+            // quitApp();
             default:
                 getAllInfo();
         }
@@ -202,7 +202,6 @@ async function updateRole() {
 //View all departments in database
 async function viewDepts() {
     connection.query('SELECT * FROM department', (err, res) => {
-        if (err) throw err
         console.table(res);
         getAllInfo();
     }
@@ -212,28 +211,21 @@ async function viewDepts() {
 
 //Add new department to database 
 async function addDept() {
-
-let departments = await connection.query('SELECT * FROM department')
-
-
-let newDept = departments.map(({ id, name }) => ({
-    name: name,
-    id: id
-}));
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'department',
-            message: 'Enter new department name:'
-        },
-    ])
-        {let insertDept = await connection.query('INSERT INTO role SET ?', {
-            name: response.name,
-            department_id: response.departments
-        })
-     }
-        console.log("Added department to database");
+        let response = await inquirer.prompt([
+            {
+                type: 'input',
+                name: 'name',
+                message: 'Enter new department name:'
+            }
+            // console.table(response);
+        ])
+        let insertDept = await connection.query('INSERT INTO department SET ?', {
+            name: response.name 
+        }, function (err) {
+            if (err) throw err
+            console.log("Added department to database");
+    }
     
-// quitApp();
+)}
 
-}
+// quitApp();
