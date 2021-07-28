@@ -12,7 +12,7 @@ function getAllInfo() {
             type: 'list',
             name: 'userInput',
             message: 'What would you like to do?',
-            choices: ["View All Employees", "Add Employee", "Update Employee Role", "View All Roles", "Add Role", "View All Departments", "Add Department"]
+            choices: ["View All Employees", "Add Employee", "Update Employee Role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Quit"]
         }
     ]).then(response => {
         switch (response.userInput) {
@@ -36,10 +36,9 @@ function getAllInfo() {
                 break;
             case "Add Department":
                 addDept();
-            case 'Quit':
-            // quitApp();
-            default:
-                getAllInfo();
+            case "Quit":
+                break;
+
         }
     })
 }
@@ -173,59 +172,74 @@ async function updateRole() {
                 choices: res.map(employee => employee.first_name)
             },
         ]).then(response => {
-            const chosenEmp = response.first_name
-            res.map(employee => employee.first_name === response.first_name)
-            if (err) throw err
-            inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'role',
-                    message: 'Update role for this employee:',
-                    choices: res.map(role => role.title === response.role_id)
-                },
-            ]).then(response => {
-                const chosenRole = res.find(role => role.title === response.role_id)
-                connection.query('SET ? WHERE first_name = chosenRole', {
-                    role_id: chosenRole.id
-                }, function (err) {
-                    if (err) throw err
-                    console.log('Employee has been added');
-                    getAllInfo();
-                }
-                )
+            connection.query('SELECT * FROM employee', (err, res) => {
+                let chosenRole = res.find(employee => employee.first_name === response.first_name);
+                if (err) throw err
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'role',
+                        message: 'Update role for this employee:',
+                        choices: res.map(role => role.role_id)
+                    },
+                    
+                ]).then(response => {
+                    console.log('whatever');
+                    const chosenRole = res.find(role => role.title === response.role_id)
+                    connection.query('SET ? WHERE role_id = chosenRole', {
+                        role_id: chosenRole.id
+                    }, function (err) {
+                        if (err) throw err
+                        console.log('Role has been added');
+                        getAllInfo();
+                    }
+                    )
+                })
             })
         })
-    })
-
+    }
+    )
 }
 
 //View all departments in database
 async function viewDepts() {
     connection.query('SELECT * FROM department', (err, res) => {
+        if (err) throw err
         console.table(res);
-        getAllInfo();
     }
     )
+    getAllInfo();
 }
-
 
 //Add new department to database 
 async function addDept() {
-        let response = await inquirer.prompt([
+    connection.query('SELECT * FROM role', (err, res) => {
+        if (err) throw err
+        inquirer.prompt([
             {
                 type: 'input',
                 name: 'name',
                 message: 'Enter new department name:'
             }
-            // console.table(response);
-        ])
-        let insertDept = await connection.query('INSERT INTO department SET ?', {
-            name: response.name 
-        }, function (err) {
-            if (err) throw err
-            console.log("Added department to database");
-    }
-    
-)}
-
+        ]).then(response => {
+            const insertDept = response.name
+            connection.query('INSERT INTO department SET ?', {
+                name: response.name
+            }, function (err) {
+                if (err) throw err
+                console.log(response);
+                console.log("Added department to database");
+                getAllInfo();
+            }
+            )
+        }
+        )
+    })
+}
 // quitApp();
+
+
+
+// for (let i = 0; i < department_id.length; i++) {
+//     console.log(department_id);
+// }
