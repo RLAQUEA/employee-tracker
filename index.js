@@ -112,7 +112,7 @@ async function addEmp() {
 
 // View all roles in database 
 async function viewRoles() {
-    connection.query('SELECT * FROM department', (err, res) => {
+    await connection.query('SELECT * FROM role', (err, res) => {
         if (err) throw err
         console.table(res);
         getAllInfo();
@@ -145,20 +145,19 @@ async function addRole() {
             message: 'Select the department for this role:',
             choices: newDept
         },
-    ])
+    ]).then(response => {
     console.log(response);
-
-    let insertRole = await connection.query('INSERT INTO role SET ?', {
+    const deptToId = newDept.find(department => department.name === response.department_id)
+    connection.query('INSERT INTO role SET ?', {
         title: response.title,
         salary: response.salary,
-        department_id: response.departments
-    })
-
-    let department_id = await connection.query('SELECT * FROM department')
-    for (let i = 0; i < department_id.length; i++) {
-        console.log(department_id);
+        department_id: deptToId.id
+    }, function () {
+    console.log("inserted role")
+    getAllInfo()
     }
-    console.log(insertRole)
+    )
+})    
 }
 
 //Update role info in database 
@@ -172,22 +171,21 @@ async function updateRole() {
                 choices: res.map(employee => employee.first_name)
             },
         ]).then(response => {
-            connection.query('SELECT * FROM employee', (err, res) => {
-                let chosenRole = res.find(employee => employee.first_name === response.first_name);
+            connection.query('SELECT * FROM role', (err, res) => {
+                let chosenEmp = (response.first_name);
                 if (err) throw err
                 inquirer.prompt([
                     {
                         type: 'list',
                         name: 'role',
                         message: 'Update role for this employee:',
-                        choices: res.map(role => role.role_id)
+                        choices: res.map(role => role.title)
                     },
                     
                 ]).then(response => {
-                    console.log('whatever');
-                    const chosenRole = res.find(role => role.title === response.role_id)
-                    connection.query('SET ? WHERE role_id = chosenRole', {
-                        role_id: chosenRole.id
+                    const chosenRole = res.find(role => role.title === response.role)
+                    connection.query('UPDATE employee SET ? WHERE first_name = ' + "'" + chosenEmp + "'", {
+                        role_id: ""+ chosenRole.id + "", 
                     }, function (err) {
                         if (err) throw err
                         console.log('Role has been added');
