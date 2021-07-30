@@ -104,9 +104,7 @@ async function addEmp() {
                 })
             })
         })
-
     })
-
 }
 
 
@@ -234,10 +232,4 @@ async function addDept() {
         )
     })
 }
-// quitApp();
-
-
-
-// for (let i = 0; i < department_id.length; i++) {
-//     console.log(department_id);
-// }
+ 
